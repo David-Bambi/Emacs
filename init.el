@@ -1,10 +1,12 @@
 ;; ==============================================================================
 ;; Environment variable
 ;; ==============================================================================
-(defvar emacs-init-file-path "C:/.emacs.d/init.el")
-(defvar custom-extension-directory "~/.emacs.d/custom-extension/")
+(load-file "C:/.emacs.d/envvar.el")
+
 (defvar my-list-themes '(kaolin-aurora
  			 kaolin-light))
+
+
 
 ;; My package list -----------------------------------------------------
 (defvar my-package '(better-defaults    ;; Better emacs with default action
@@ -67,9 +69,39 @@
 
 ;; APPEARENCE ------------------------------------------------------------------
 (defun load-my-theme ()
-  ;; Theme 
   (load-theme 'kaolin-aurora  t t)
   (enable-theme 'kaolin-aurora ))
+
+(defun set-my-font ()
+  (set-face-attribute 'default nil
+                      :family "Consolas" :height 110))
+
+(defun set-scrolling-bar ()  
+  (require 'smooth-scroll)
+  (smooth-scroll-mode t))
+
+;; BACKUP ----------------------------------------------------------------------
+(defun set-backup-directory ()
+  (setq backup-directory-alist backup-directory)
+  (setq undo-tree-history-directory-alist backup-undo-tree))
+
+;; BASIC -----------------------------------------------------------------------
+(defun setup-basic ()
+  (require 'better-defaults)
+
+  ;; Remove startup screen
+  (setq inhibit-startup-screen t)  
+
+  ;; Remove the sound when we reach the end of the file
+  (setq ring-bell-function 'ignore))
+
+
+;; UNDO ------------------------------------------------------------------------
+(defun setup-undo ()
+  (require 'undo-tree)
+  (global-undo-tree-mode)
+  (global-set-key (kbd "C-z") 'undo-tree-undo)
+  (global-set-key (kbd "C-S-z") 'undo-tree-redo))
 
 ;; EXECUTION -------------------------------------------------------------------
 (defun execute (f)
@@ -92,11 +124,13 @@
 ;; ==============================================================================
 (execute-init-functions
  'initialize-package-interface
- 'load-my-theme)
-
-
-  ;; Custom extension
-(add-to-list 'load-path custom-extension-directory)
+ 'load-my-theme
+ 'set-my-font
+ 'set-scrolling-bar
+ 'set-backup-directory
+ 'setup-basic
+ 'setup-undo
+ )
 
 ;; Program to preview the latex file
 (defvar teX-view-programs
@@ -104,39 +138,11 @@
                     (mode-io-correlate " -forward-search %b %n ") " %o"))))
 
 
-
-
-;; BASIC -----------------------------------------------------------------------
-(require 'better-defaults)
-
-;; Smooth scrolling
-(require 'smooth-scroll)
-(smooth-scroll-mode t)
-
-;; Remove startup screen
-(setq inhibit-startup-screen t)
-
-;; Backup
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-;; Remove the sound when we reach the end of the file
-(setq ring-bell-function 'ignore)
-
 ;; Open file in utf-8 when we do not know the coding system
 ;; (prefer-coding-system 'utf-8)
 
 ;; To change windows 
 (global-set-key (kbd "C-q") 'other-window)
-
-;; UNDO-TREE -------------------------------------------------------------------
-(require 'undo-tree)
-(global-undo-tree-mode t)
-(defalias 'redo 'undo-tree-redo)
-(global-set-key (kbd "C-z") 'undo)
-(global-set-key (kbd "C-S-z") 'redo)
 
 ;; ;; HELM MODE ----------------------------------------------------------------
 (require 'helm)
@@ -177,8 +183,6 @@
 (add-hook 'prog-mode-hook 'highlight-quoted-mode)
 (add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode)
 
-;; Agrandir le texte
-(set-face-attribute 'default (selected-frame) :height 125)
 
 ;; NAVIGATION BAR --------------------------------------------------------------
 
@@ -346,7 +350,6 @@
   (CreateWorld))
 
 (global-set-key (kbd "C-c m") 'Game)
-
 
 
 ;; ;; Latex

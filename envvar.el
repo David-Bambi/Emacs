@@ -1,0 +1,5 @@
+(setq emacs-init-file-path "C:/.emacs.d/init.el")
+(setq emacs-buffer-at-start "D:/")
+(setq custom-extension-directory "~/.emacs.d/custom/")
+(setq backup-directory '(("C/.emacs.d/backups/")))
+(setq backup-undo-tree '(("C/.emacs.d/backups_undo_tree/")))
